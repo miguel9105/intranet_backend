@@ -23,8 +23,12 @@ return new class extends Migration
             $table->unsignedBigInteger('regional_id');
             $table->foreign('regional_id')->references('id')->on('regionals');
             $table->foreign('position_id')->references('id')->on('positions');
+            $table->string('password');
+            $table->rememberToken();
             $table->timestamps();
         });
+
+        
     }
 
     /**
@@ -33,5 +37,6 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('users');
+        
     }
 };
