@@ -2,38 +2,74 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable; 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens; 
+use App\Models\Company; 
+use App\Models\Regional; 
+use App\Models\Position; 
 
-class User extends Model
+class User extends Authenticatable 
 {
-    use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable;
 
-     protected $fillable = [
-        'type_publication'
+    protected $fillable = [
+        'name_user',
+        'last_name_user',
+        'email',
+        'number_document',
+        'password',
+        // --- CAMPOS AÑADIDOS PARA EL REGISTRO ---
+        'company_id', 
+        'regional_id',
+        'position_id',
     ];
 
-    // Listas para filtros dinámicos
-    protected $allowIncluded = ['companies'];
-    protected $allowFilter = ['id', 'type_publication'];
-    protected $allowSort = ['id', 'type_publication', 'created_at'];
+   /**
+     * The attributes that should be hidden for serialization.
+     *
+     * @var list<string>
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+    /**
+     * Get the attributes that should be cast.
+     *
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            // Si el password no se hashea automáticamente, puedes descomentar la línea de abajo
+            // 'password' => 'hashed', 
+        ];
+    }
+
+    // Listas para filtros dinámicos (ajustadas a tus relaciones)
+    protected $allowIncluded = ['company', 'regional', 'position']; 
+    protected $allowFilter = ['id', 'email']; 
+    protected $allowSort = ['id', 'email', 'created_at'];
 
     // Relaciones
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
     }
-     public function regional()
+    public function regional()
     {
         return $this->belongsTo(Regional::class, 'regional_id');
     }
-     public function position()
+    public function position()
     {
         return $this->belongsTo(Position::class, 'position_id');
     }
 
-    // Scopes
+    // Scopes (tus Scopes están bien definidos para el Query Builder)
     public function scopeIncluded(Builder $query)
     {
         if (empty(request('included'))) return;
