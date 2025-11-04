@@ -1,29 +1,35 @@
-<?php
+<?php // <--- FALTA ESTA ETIQUETA
 
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RegionalController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Route; // <--- ESENCIAL PARA USAR EL FACADE ROUTE
 
-// Rutas de Autenticación (No requieren Token)
-Route::post('/login', [UserController::class, 'login'])->name('login');
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Aquí es donde puedes registrar rutas de API para tu aplicación.
+|
+*/
 
-// Rutas Protegidas (Requieren Token Bearer)
+// Rutas de Acceso (NO Requieren Token)
+Route::post('/users/login', [UserController::class, 'login']);
+Route::post('/users', [UserController::class, 'store']); // Registro
+
+// Rutas Protegidas (Requieren Token Bearer: auth:sanctum)
 Route::middleware('auth:sanctum')->group(function () {
     
-    // Ruta de Cierre de Sesión (Logout)
+    // Ruta de Cierre de Sesión
     Route::post('/logout', [UserController::class, 'logout']);
     
-    // Tus otras rutas CRUD (index, show, update, destroy) también deben ir aquí
+    // Rutas de Recursos Protegidos (CRUD)
     Route::apiResource('users', UserController::class)->except(['store']);
+    Route::apiResource('companies', CompanyController::class);
+    Route::apiResource('regionals', RegionalController::class);
+    Route::apiResource('positions', PositionController::class);
+    Route::apiResource('roles', RoleController::class);
 });
-
-Route::post('/users', [UserController::class, 'store']);
-Route::apiResource('companies', CompanyController::class);
-Route::apiResource('regionals', RegionalController::class);
-Route::apiResource('positions', PositionController::class);
-Route::apiResource('roles', RoleController::class);
-
-

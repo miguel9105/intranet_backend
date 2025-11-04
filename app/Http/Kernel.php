@@ -14,9 +14,13 @@ class Kernel extends HttpKernel
      * @var array<int, class-string|string>
      */
     protected $middleware = [
+        // 1. CORRECCIÓN CRÍTICA: Mover HandleCors al inicio del stack global.
+        // Esto asegura que el preflight request (OPTIONS) se maneje lo antes posible,
+        // antes de que cualquier otro middleware pueda bloquearlo.
+        \Illuminate\Http\Middleware\HandleCors::class, 
+        
         // \App\Http\Middleware\TrustHosts::class,
         \App\Http\Middleware\TrustProxies::class,
-        \Illuminate\Http\Middleware\HandleCors::class,
         \App\Http\Middleware\PreventRequestsDuringMaintenance::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
@@ -39,9 +43,12 @@ class Kernel extends HttpKernel
         ],
 
         'api' => [
-            // \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+            // 2. CORRECCIÓN SANCTUM: Descomentar o añadir este middleware.
+            // Es vital si vas a usar Sanctum para autenticar las peticiones posteriores.
+            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            \Illuminate\Http\Middleware\HandleCors::class,
         ],
     ];
 
