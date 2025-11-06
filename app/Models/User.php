@@ -51,11 +51,27 @@ class User extends Authenticatable
     }
 
     // Listas para filtros dinámicos (ajustadas a tus relaciones)
-    protected $allowIncluded = ['company', 'regional', 'position']; 
+    protected $allowIncluded = ['company', 'regional', 'position', 'roles']; 
     protected $allowFilter = ['id', 'email']; 
     protected $allowSort = ['id', 'email', 'created_at'];
 
     // Relaciones
+
+    // --- RELACIÓN DE ROLES (Muchos a Muchos) ---
+
+    public function roles()
+    {
+        
+        return $this->belongsToMany(Role::class, 'role_users', 'user_id', 'role_id');
+    }
+
+
+    public function getRoleNamesAttribute()
+    {
+        
+        return $this->roles->pluck('name_role')->toArray();
+    }
+
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');

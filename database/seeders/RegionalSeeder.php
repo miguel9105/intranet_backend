@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Regional;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class RegionalSeeder extends Seeder
 {
@@ -13,13 +12,20 @@ class RegionalSeeder extends Seeder
      */
     public function run(): void
     {
-        Regional::create([
-            'name_regional'=> 'nacional',
-            'ubication_regional'=> 'cra 7 -67-45',
-        ]);
-        Regional::create([
-            'name_regional'=> 'popayan sur',
-            'ubication_regional'=> 'cra 5 a',
+        DB::table('regionals')->insert([
+            [
+                'name_regional' => 'nacional',
+                'ubication_regional' => 'popayan cra7 ',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name_regional' => 'carrera septima',
+                'ubication_regional' => 'calle 7',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+           
         ]);
     }
 }

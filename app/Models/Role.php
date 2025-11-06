@@ -23,10 +23,11 @@ class Role extends Model
     // Relaciones
     public function users()
     {
-        return $this->hasMany(User::class, 'user_id');
+        // ✅ INTEGRACIÓN/CORRECCIÓN: Se utiliza belongsToMany para la relación N:M
+        // Asumo que la tabla pivote es 'role_users' y las claves son 'role_id' y 'user_id'.
+        return $this->belongsToMany(User::class, 'role_users', 'role_id', 'user_id');
     }
 
-    // Scopes
     public function scopeIncluded(Builder $query)
     {
         if (empty(request('included'))) return;

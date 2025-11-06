@@ -9,7 +9,20 @@ use Illuminate\Support\Facades\Auth; // Añadir el Facade de Auth
 
 class UserController extends Controller
 {
-    // ... index, show, update, destroy están bien ...
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //metodos los cuales nos permiten relacionar los datos
+        $users = User::query()
+        ->included() // Maneja la inclusión de company, regional, position y roles
+        ->filter()   // Aplica los filtros
+        ->sort()     // Aplica el ordenamiento
+        ->getOrPaginate(); // Devuelve get() o paginate()
+
+    return response()->json($users);
+    }
     
     /**
      * Store a newly created resource in storage.
@@ -23,7 +36,7 @@ class UserController extends Controller
             // number_document debe ser string y debe ser unique en la BD
             'number_document'=> 'required|string|unique:users|max:255', 
             
-            // --- VALIDACIONES AÑADIDAS PARA LAS CLAVES FORÁNEAS ---
+            // --- VALIDACIONES AÑADIDAS PARA LAS CLAVES FORÁNEAS ---\
             'company_id'     => 'required|integer|exists:companies,id',
             'regional_id'    => 'required|integer|exists:regionals,id',
             'position_id'    => 'required|integer|exists:positions,id',
@@ -93,7 +106,7 @@ class UserController extends Controller
 
     // --- NUEVAS FUNCIONES DE AUTENTICACIÓN ---
 
-    /**
+  /**
      * Log the user in and create an API token.
      */
     public function login(Request $request)
@@ -104,8 +117,8 @@ class UserController extends Controller
             'password' => 'required',
         ]);
 
-        // 2. Buscar el usuario
-        $user = User::where('email', $request->email)->first();
+        // 2. Buscar el usuario y CARGAR LA RELACIÓN DE ROLES <-- MODIFICACIÓN CLAVE
+        $user = User::where('email', $request->email)->with('roles')->first();
 
         // 3. Verificar usuario y contraseña
         if (!$user || !Hash::check($request->password, $user->password)) {
@@ -115,10 +128,10 @@ class UserController extends Controller
         }
 
         // 4. Crear el token de Sanctum
-        // El 'auth_token' es el nombre que se le da al token. Puedes usar cualquier string.
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        // 5. Devolver la respuesta con el token
+        // 5. Devolver la respuesta con el token. 
+        // El user ahora incluye el array 'role_names'.
         return response()->json([
             'message' => 'Inicio de sesión exitoso.',
             'user'    => $user,
@@ -132,7 +145,6 @@ class UserController extends Controller
     public function logout(Request $request)
     {
         // El token actual se obtiene del request a través del middleware 'auth:sanctum'.
-        // Se revoca el token que se usó para hacer esta solicitud.
         $request->user()->currentAccessToken()->delete();
 
         return response()->json([

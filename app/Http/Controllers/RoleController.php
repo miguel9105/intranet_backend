@@ -26,10 +26,10 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //  'require' cambiado a 'required'
         $request->validate([
-            'name_role'=> 'require|max:255',
-            'description_role'=> 'require|max:255',
+            'name_role'=> 'required|max:255',
+            'description_role'=> 'required|max:255',
         ]);
 
         $role = Role::create([
@@ -54,15 +54,15 @@ class RoleController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        //'require' cambiado a 'required' y se eliminó el doble ':' en 'max:255'
         $request->validate([
-            'name_role'=>  'require|max::255',
-            'description_role'=>  'require|max::255',
+            'name_role'=>  'required|max:255',
+            'description_role'=>  'required|max:255',
         ]);
 
         $role = Role::find($id);
         if (!$role) {
-            return response()->json(['message'=> 'rol no encontrada'], 404);
+            return response()->json(['message'=> 'rol no encontrado'], 404);
         }
          // ingreso del nuevo dato a la tabla
         $role->update([
@@ -88,6 +88,6 @@ class RoleController extends Controller
         // metodo para elimincacion del dato
         $role->delete();
         // repsuesta de la eliminacion del dato
-        return response()->json(['message' => 'rol eliminado'], 204);
+        return response()->json(null, 204);
     }
 }

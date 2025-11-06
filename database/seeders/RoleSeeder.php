@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Role;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class RoleSeeder extends Seeder
 {
@@ -13,14 +12,32 @@ class RoleSeeder extends Seeder
      */
     public function run(): void
     {
-        Role::create([
-            'name_role' => 'auxiliar',
-            'description_role' => 'encargado de generar informes contables ',
-        ]);
-
-        Role::create([
-            'name_role' => 'coordinador ',
-            'description_role' => 'responsable del area financiera',
+        // 🚨 IMPORTANTE: Los nombres deben coincidir exactamente con los usados en web.php y api.php
+        DB::table('roles')->insert([
+            [
+                'name_role' => 'Administrador',
+                'description_role' => 'Acceso y control total sobre la plataforma y la gestión de usuarios.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name_role' => 'Gestor',
+                'description_role' => 'Acceso a módulos de Cartera, Mesa de Ayuda e Inventario.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name_role' => 'Administrativo',
+                'description_role' => 'Acceso a módulos de Inventario y Mesa de Ayuda.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name_role' => 'Asesor',
+                'description_role' => 'Acceso limitado solo al módulo de Inventario.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ]);
     }
 }

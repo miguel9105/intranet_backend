@@ -1,19 +1,16 @@
-<?php // <--- FALTA ESTA ETIQUETA
+<?php 
 
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RegionalController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
-use Illuminate\Support\Facades\Route; // <--- ESENCIAL PARA USAR EL FACADE ROUTE
+use Illuminate\Support\Facades\Route; 
 
 /*
 |--------------------------------------------------------------------------
 | API Routes
 |--------------------------------------------------------------------------
-|
-| Aquí es donde puedes registrar rutas de API para tu aplicación.
-|
 */
 
 // Rutas de Acceso (NO Requieren Token)
@@ -26,10 +23,36 @@ Route::middleware('auth:sanctum')->group(function () {
     // Ruta de Cierre de Sesión
     Route::post('/logout', [UserController::class, 'logout']);
     
-    // Rutas de Recursos Protegidos (CRUD)
-    Route::apiResource('users', UserController::class)->except(['store']);
-    Route::apiResource('companies', CompanyController::class);
-    Route::apiResource('regionals', RegionalController::class);
-    Route::apiResource('positions', PositionController::class);
-    Route::apiResource('roles', RoleController::class);
+    // El 'Administrador' accede a todas las rutas.
+    // No necesita un middleware específico si se le da acceso a las rutas 
+    // de todos los demás roles o si su middleware se aplica al grupo más amplio.
+
+    // 1. FUNCIONES GENERALES DE GESTIÓN (Administrador)
+    // El administrador accede a todas las funciones CRUD y de gestión de usuarios/roles.
+    Route::middleware('role:Administrador')->group(function () { 
+        Route::apiResource('users', UserController::class)->except(['store']);
+        Route::apiResource('companies', CompanyController::class);
+        Route::apiResource('regionals', RegionalController::class);
+        Route::apiResource('positions', PositionController::class);
+        Route::apiResource('roles', RoleController::class);
+    });
+   // // 2. MODULO DE INVENTARIO (Asesor, Administrativo, Gestor, Administrador)
+    // // Acceso a Inventario: Asesor, Administrativo, Gestor, Administrador
+    // Route::middleware('role:Asesor|Administrativo|Gestor|Administrador')->group(function () {
+    //     Route::apiResource('inventario', InventarioController::class);
+    // });
+
+    // // 3. MODULO MESA DE AYUDA (Administrativo, Gestor, Administrador)
+    // // Acceso a Mesa de Ayuda: Administrativo, Gestor, Administrador
+    // Route::middleware('role:Administrativo|Gestor|Administrador')->group(function () {
+    //     Route::apiResource('mesa_ayuda', MesaAyudaController::class);
+    // });
+
+    // // 4. MODULO DE CARTERA (Gestor, Administrador)
+    // // Acceso a Cartera: Gestor, Administrador
+    // Route::middleware('role:Gestor|Administrador')->group(function () {
+    //     Route::apiResource('cartera', CarteraController::class);
+    // });
+ 
+    
 });

@@ -20,9 +20,10 @@ return new class extends Migration
             $table->unsignedBigInteger('company_id');
             $table->foreign('company_id')->references('id')->on('companies');
             $table->unsignedBigInteger('position_id');
+            $table->foreign('position_id')->references('id')->on('positions');
             $table->unsignedBigInteger('regional_id');
             $table->foreign('regional_id')->references('id')->on('regionals');
-            $table->foreign('position_id')->references('id')->on('positions');
+            
             $table->string('password');
             $table->rememberToken();
             $table->timestamps();
