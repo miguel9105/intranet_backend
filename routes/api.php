@@ -1,10 +1,14 @@
 <?php 
 
 use App\Http\Controllers\CompanyController;
+use App\Http\Controllers\HelpTableController;
+use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PositionController;
 use App\Http\Controllers\RegionalController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\WalletController;
+use App\Models\Inventory;
 use Illuminate\Support\Facades\Route; 
 
 /*
@@ -36,23 +40,26 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('positions', PositionController::class);
         Route::apiResource('roles', RoleController::class);
     });
-   // // 2. MODULO DE INVENTARIO (Asesor, Administrativo, Gestor, Administrador)
-    // // Acceso a Inventario: Asesor, Administrativo, Gestor, Administrador
-    // Route::middleware('role:Asesor|Administrativo|Gestor|Administrador')->group(function () {
-    //     Route::apiResource('inventario', InventarioController::class);
-    // });
+    // 2. MODULO DE INVENTARIO (Asesor, Administrativo, Gestor, Administrador)
+    // Se corrigen los roles con COMAS (,)
+    Route::middleware('role:Asesor,Administrativo,Gestor,Administrador')->group(function () {
+        // Asuma que aquí va su controlador de Inventario
+         Route::apiResource('inventario', InventoryController::class); 
+    });
 
-    // // 3. MODULO MESA DE AYUDA (Administrativo, Gestor, Administrador)
-    // // Acceso a Mesa de Ayuda: Administrativo, Gestor, Administrador
-    // Route::middleware('role:Administrativo|Gestor|Administrador')->group(function () {
-    //     Route::apiResource('mesa_ayuda', MesaAyudaController::class);
-    // });
+    // 3. MODULO MESA DE AYUDA (Administrativo, Gestor, Administrador)
+    // Se corrigen los roles con COMAS (,)
+    Route::middleware('role:Administrativo,Gestor,Administrador')->group(function () {
+        // Asuma que aquí va su controlador de MesaAyuda
+        Route::apiResource('mesa_ayuda', HelpTableController::class);
+    });
 
-    // // 4. MODULO DE CARTERA (Gestor, Administrador)
-    // // Acceso a Cartera: Gestor, Administrador
-    // Route::middleware('role:Gestor|Administrador')->group(function () {
-    //     Route::apiResource('cartera', CarteraController::class);
-    // });
+    // 4. MODULO DE CARTERA (Gestor, Administrador)
+    // Se corrigen los roles con COMAS (,)
+    Route::middleware('role:Gestor,Administrador')->group(function () {
+        // Asuma que aquí va su controlador de Cartera
+        Route::apiResource('cartera', WalletController::class);
+    });
  
     
 });
