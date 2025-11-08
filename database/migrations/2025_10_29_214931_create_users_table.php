@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\Rules\Unique;
 
 return new class extends Migration
 {
@@ -15,14 +16,15 @@ return new class extends Migration
             $table->id();
             $table->string('name_user');
             $table->string('last_name_user');
-            $table->string('email');
-            $table->integer('number_document');
+            $table->date('birthdate')->nullable();
+            $table->string('email')->unique();
+            $table->integer('number_document')->unique();
             $table->unsignedBigInteger('company_id');
-            $table->foreign('company_id')->references('id')->on('companies');
+            $table->foreign('company_id')->references('id')->on('companies')->onDelete('restrict');
             $table->unsignedBigInteger('position_id');
-            $table->foreign('position_id')->references('id')->on('positions');
+            $table->foreign('position_id')->references('id')->on('positions')->onDelete('restrict');
             $table->unsignedBigInteger('regional_id');
-            $table->foreign('regional_id')->references('id')->on('regionals');
+            $table->foreign('regional_id')->references('id')->on('regionals')->onDelete('restrict');
             
             $table->string('password');
             $table->rememberToken();

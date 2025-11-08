@@ -15,9 +15,9 @@ return new class extends Migration
             $table->id(); 
             $table->string('type_document', 50); // Ej: Factura, Contrato
             $table->string('reference', 255)->unique(); // Número de factura/referencia
-            $table->decimal('debt amount', 10, 2);
+            $table->decimal('debt_amount', 10, 2);
             $table->date('expiration_date');
-            $table->string('payment status', 50)->default('Pendiente');
+            $table->string('payment_status', 50)->default('Pendiente');
             $table->timestamps();
         });
     }

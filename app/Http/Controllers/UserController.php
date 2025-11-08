@@ -32,10 +32,10 @@ class UserController extends Controller
         $request->validate([
             'name_user'      => 'required|string|max:255',
             'last_name_user' => 'required|string|max:255',
+            'birthdate'      => 'nullable|date',
             'email'          => 'required|email|unique:users|max:255', 
             // number_document debe ser string y debe ser unique en la BD
             'number_document'=> 'required|string|unique:users|max:255', 
-            
             // --- VALIDACIONES AÑADIDAS PARA LAS CLAVES FORÁNEAS ---\
             'company_id'     => 'required|integer|exists:companies,id',
             'regional_id'    => 'required|integer|exists:regionals,id',
@@ -47,6 +47,7 @@ class UserController extends Controller
         $user = User::create([
             'name_user'      => $request->name_user,
             'last_name_user' => $request->last_name_user,
+            'birthdate'      => $request->birthdate,
             'email'          => $request->email,
             'number_document'=> $request->number_document,
             // --- CAMPOS AÑADIDOS AL CREATE ---
@@ -78,6 +79,7 @@ class UserController extends Controller
         $request->validate([
             'name_user'      => 'required|string|max:255',
             'last_name_user' => 'required|string|max:255',
+            'birthdate'      => 'nullable|date',
             'email'          => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
             'number_document'=> 'required|string|max:255', 
         ]);
@@ -85,6 +87,7 @@ class UserController extends Controller
         $user->update([
             'name_user'      => $request->name_user,
             'last_name_user' => $request->last_name_user,
+            'birthdate'      => $request->birthdate,
             'email'          => $request->email,
             'number_document'=> $request->number_document,
         ]);
