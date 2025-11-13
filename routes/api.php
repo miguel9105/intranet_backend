@@ -1,9 +1,12 @@
 <?php 
 
 use App\Http\Controllers\CompanyController;
+// Agrega el nuevo controlador
+use App\Http\Controllers\DataCreditoController; 
 use App\Http\Controllers\HelpTableController;
 use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\PositionController;
+use App\Http\Controllers\ProcesamientoController;
 use App\Http\Controllers\RegionalController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
@@ -28,8 +31,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [UserController::class, 'logout']);
     
     // El 'Administrador' accede a todas las rutas.
-    // No necesita un middleware específico si se le da acceso a las rutas 
-    // de todos los demás roles o si su middleware se aplica al grupo más amplio.
 
     // 1. FUNCIONES GENERALES DE GESTIÓN (Administrador)
     // El administrador accede a todas las funciones CRUD y de gestión de usuarios/roles.
@@ -39,6 +40,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::apiResource('regionals', RegionalController::class);
         Route::apiResource('positions', PositionController::class);
         Route::apiResource('roles', RoleController::class);
+        
+        // --- NUEVA RUTA: Procesamiento de archivos DataCredito ---
+        Route::post('/iniciar-datacredito', [ProcesamientoController::class, 'procesar']); 
+        // ---------------------------------------------------------
     });
     // 2. MODULO DE INVENTARIO (Asesor, Administrativo, Gestor, Administrador)
     // Se corrigen los roles con COMAS (,)
