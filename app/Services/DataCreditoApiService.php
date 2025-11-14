@@ -56,10 +56,10 @@ class DataCreditoApiService
 
             // Integración de timeout(60) para evitar el cURL error 28 en subidas largas.
             // Se envía el contenido con el Content-Type correcto.
-            $response = Http::withBody($fileContent, $mimeType)
-                           ->timeout(180) 
-                           ->put($uploadUrl);
-
+           $response = Http::withBody($fileContent, $mimeType)
+               ->timeout(300) // Cambiar de 180 a 300 segundos
+               ->put($uploadUrl);
+               
             if ($response->successful()) {
                 return true;
             }

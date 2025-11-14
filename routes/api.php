@@ -47,21 +47,21 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     // 2. MODULO DE INVENTARIO (Asesor, Administrativo, Gestor, Administrador)
     // Se corrigen los roles con COMAS (,)
-    Route::middleware('role:Asesor,Administrativo,Gestor,Administrador')->group(function () {
+    Route::middleware('role:Asesor:Administrativo:Gestor:Administrador')->group(function () {
         // Asuma que aquí va su controlador de Inventario
          Route::apiResource('inventario', InventoryController::class); 
     });
 
     // 3. MODULO MESA DE AYUDA (Administrativo, Gestor, Administrador)
     // Se corrigen los roles con COMAS (,)
-    Route::middleware('role:Administrativo,Gestor,Administrador')->group(function () {
+    Route::middleware('role:Administrativo:Gestor:Administrador')->group(function () {
         // Asuma que aquí va su controlador de MesaAyuda
         Route::apiResource('mesa_ayuda', HelpTableController::class);
     });
 
     // 4. MODULO DE CARTERA (Gestor, Administrador)
     // Se corrigen los roles con COMAS (,)
-    Route::middleware('role:Gestor,Administrador')->group(function () {
+    Route::middleware('role:Gestor:Administrador')->group(function () {
         // Asuma que aquí va su controlador de Cartera
         Route::apiResource('cartera', WalletController::class);
     });

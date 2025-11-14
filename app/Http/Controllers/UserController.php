@@ -120,7 +120,8 @@ class UserController extends Controller
             'password' => 'required',
         ]);
 
-        // 2. Buscar el usuario y CARGAR LA RELACIÓN DE ROLES <-- MODIFICACIÓN CLAVE
+        // 2. Buscar el usuario y CARGAR LA RELACIÓN DE ROLES
+        // Se añade 'with('roles')' para que el accessor 'role_names' funcione correctamente.
         $user = User::where('email', $request->email)->with('roles')->first();
 
         // 3. Verificar usuario y contraseña
@@ -133,11 +134,21 @@ class UserController extends Controller
         // 4. Crear el token de Sanctum
         $token = $user->createToken('auth_token')->plainTextToken;
 
-        // 5. Devolver la respuesta con el token. 
-        // El user ahora incluye el array 'role_names'.
+        // 5. Devolver la respuesta con el token y un objeto de usuario limpio que incluya los roles.
         return response()->json([
             'message' => 'Inicio de sesión exitoso.',
-            'user'    => $user,
+            'user'    => [
+                'id'               => $user->id,
+                'name_user'        => $user->name_user,
+                'last_name_user'   => $user->last_name_user,
+                'email'            => $user->email,
+                'number_document'  => $user->number_document,
+                'company_id'       => $user->company_id,
+                'regional_id'      => $user->regional_id,
+                'position_id'      => $user->position_id,
+                // *** ESTE CAMPO ES CLAVE PARA EL FRONTEND ***
+                'roles'            => $user->role_names, // Usa el accessor del modelo User.php
+            ],
             'token'   => $token,
         ], 200);
     }
