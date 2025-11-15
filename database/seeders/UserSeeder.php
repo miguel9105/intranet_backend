@@ -40,7 +40,7 @@ class UserSeeder extends Seeder
             // 3. Usuario Administrativo (Password: 'password')
             [
                 'name_user' => 'Carlos', 'last_name_user' => 'Contable', 'email' => 'admini@test.com', 'number_document' => '1000000002',
-                'company_id' => 3, 'regional_id' => 3, 'position_id' => 3,
+                'company_id' => 1, 'regional_id' => 1, 'position_id' => 3,
                 'password' => Hash::make('password'), 'created_at' => now(), 'updated_at' => now(),
             ],
             // 4. Usuario Asesor (Password: 'password')

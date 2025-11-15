@@ -20,10 +20,12 @@ return [
     'allowed_methods' => ['*'],
 
     'allowed_origins' => [
-    env('FRONTEND_URL', 'http://127.0.0.1:8080'),
+    env('FRONTEND_URL',
+        'http://127.0.0.1:8080'),
         'http://localhost:8080',
         'http://localhost:8000',                      // alternativa localhost
-        'http://localhost:3000'
+        'http://localhost:3000',
+        'http://127.0.0.1:8000'
 ],
 
     'allowed_origins_patterns' => [],
@@ -34,6 +36,6 @@ return [
 
     'max_age' => 0,
 
-    'supports_credentials' => false,
+    'supports_credentials' => true,
 
 ];
