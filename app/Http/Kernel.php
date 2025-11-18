@@ -42,13 +42,17 @@ class Kernel extends HttpKernel
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
         ],
 
+        // 'api' => [
+        //     // 2. CORRECCIÓN SANCTUM: Descomentar o añadir este middleware.
+        //     // Es vital si vas a usar Sanctum para autenticar las peticiones posteriores.
+        //     \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
+        //     \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
+        //     \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        //     \Illuminate\Http\Middleware\HandleCors::class,
+        // ],
         'api' => [
-            // 2. CORRECCIÓN SANCTUM: Descomentar o añadir este middleware.
-            // Es vital si vas a usar Sanctum para autenticar las peticiones posteriores.
-            \Laravel\Sanctum\Http\Middleware\EnsureFrontendRequestsAreStateful::class,
             \Illuminate\Routing\Middleware\ThrottleRequests::class.':api',
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
-            \Illuminate\Http\Middleware\HandleCors::class,
         ],
     ];
 
@@ -71,6 +75,9 @@ class Kernel extends HttpKernel
         'signed' => \App\Http\Middleware\ValidateSignature::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
-        'role' => \App\Http\Middleware\RoleMiddleware::class,
+        // 'role' => \App\Http\Middleware\RoleMiddleware::class,
+        'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
+        'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
+        'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
     ];
 }
