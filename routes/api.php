@@ -54,19 +54,16 @@ Route::middleware('auth:api')->group(function () {
     });
 
     // --- 2. MODULO DE INVENTARIO ---
-    // 👈 ¡CAMBIO CLAVE! Sintaxis de Spatie para múltiples roles usa "|"
     Route::middleware('role:Asesor|Administrativo|Gestor|Administrador')->group(function () {
         Route::apiResource('inventario', InventoryController::class);
     });
 
     // --- 3. MODULO MESA DE AYUDA ---
-    // 👈 ¡CAMBIO CLAVE! Sintaxis de Spatie para múltiples roles usa "|"
     Route::middleware('role:Administrativo|Gestor|Administrador')->group(function () {
         Route::apiResource('mesa_ayuda', HelpTableController::class);
     });
 
     // --- 4. MODULO DE CARTERA ---
-    // 👈 ¡CAMBIO CLAVE! Sintaxis de Spatie para múltiples roles usa "|"
     Route::middleware('role:Gestor|Administrador')->group(function () {
         Route::apiResource('cartera', WalletController::class);
     });
