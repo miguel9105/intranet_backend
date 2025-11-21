@@ -56,6 +56,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    'datacredito_api_url' => env('DATACREDITO_API_URL'),
 
     'asset_url' => env('ASSET_URL'),
 
