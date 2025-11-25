@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth; // Lo usaremos para el helper auth()
 use Illuminate\Validation\ValidationException;
 
@@ -103,19 +104,22 @@ class UserController extends Controller
      * Update the specified resource in storage.
      * (MODIFICADO para actualizar el ROL)
      */
- public function update(Request $request, User $user)
+public function update(Request $request, User $user)
 {
     $request->validate([
         'name_user'      => 'required|string|max:255',
         'last_name_user' => 'required|string|max:255',
         'birthdate'      => 'nullable|date',
-        // CLAVE 1: Ignorar el email y número de documento del usuario actual
         'email'          => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-        'number_document'=> ['required', 'string', 'max:255', Rule::unique('users')->ignore($user->id)],
+        
+        // CORRECCIÓN 1: number_document
+        // El error 422 indica que no es reconocido como string. Al quitar la regla 'string'
+        // y mantener 'max', Laravel es más flexible, aunque el campo debe ser requerido.
+        'number_document'=> ['required', 'max:255', Rule::unique('users')->ignore($user->id)],
+        
         'company_id'     => 'required|integer|exists:companies,id',
         'regional_id'    => 'required|integer|exists:regionals,id',
         'position_id'    => 'required|integer|exists:positions,id',
-        // CLAVE 2: La contraseña es OPCIONAL en la edición
         'password'       => 'nullable|min:8|max:255', 
         'role_name'      => 'required|string|exists:roles,name', 
     ]);
@@ -131,16 +135,27 @@ class UserController extends Controller
     // 3. Actualiza el usuario
     $user->update($data);
 
-    // 4. Actualiza el rol
-    if ($request->filled('role_name') && $user->hasRole($request->role_name) === false) {
-         // Quita todos los roles antiguos y asigna el nuevo (método más seguro)
-        $user->syncRoles([$request->role_name]); 
+    // 4. Actualiza el rol (SOLUCIÓN al error de Spatie: RoleDoesNotExist for guard 'api')
+    $newRoleName = $request->input('role_name');
+
+    // CORRECCIÓN 2: Buscamos el rol explícitamente en el 'web' guard, 
+    // ya que tus roles se crearon sin guard, lo que hace que Spatie use 'web'.
+    // Si el rol ya existe en la DB, esta búsqueda es segura.
+    try {
+        $role = Role::findByName($newRoleName, 'web'); 
+        
+        // Sincroniza (reemplaza) todos los roles del usuario con el rol encontrado
+        if ($role) {
+            $user->syncRoles([$role]);
+        }
+    } catch (\Spatie\Permission\Exceptions\RoleDoesNotExist $e) {
+        // En caso de error, devolvemos un error 422 descriptivo.
+        return response()->json(['message' => 'Error al asignar el rol: ' . $e->getMessage()], 422);
     }
     
     // 5. Devuelve el usuario actualizado (con sus roles)
     return response()->json($user->load('roles'), 200); 
 }
-
     /**
      * Remove the specified resource from storage.
      * (Tu código está perfecto, no se toca)

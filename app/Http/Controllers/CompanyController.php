@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use App\Models\Company;
+use Illuminate\Validation\Rule;
 
 use Illuminate\Http\Request;
 

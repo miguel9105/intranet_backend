@@ -47,21 +47,33 @@ class ProcesamientoDatacreditoController extends Controller
      * PASO 3: Iniciar el procesamiento en la API de Python.
      * POST /api/procesamiento/iniciar
      */
-    public function iniciarProceso(Request $request)
-    {
-        try {
-            $response = $this->client->post('iniciar_procesamiento_datacredito', [
-                'json' => $request->all()
-            ]);
+   public function iniciarProceso(Request $request)
+{
+    // 1. Validamos que tengamos las claves de S3
+    $request->validate([
+        'plano_key' => 'required|string',
+        'correcciones_key' => 'required|string',
+        'empresa' => 'required|string',
+    ]);
 
-            return response()->json(
-                json_decode($response->getBody()->getContents()), 
-                $response->getStatusCode()
-            );
-        } catch (RequestException $e) {
-            return $this->handleGuzzleError($e);
-        }
+    // 2. Reenviamos la petición al endpoint de Python
+    try {
+        // El endpoint en Python es 'iniciar_procesamiento_datacredito'
+        $response = $this->client->post('iniciar_procesamiento_datacredito', [
+            'json' => $request->all()
+        ]);
+
+        // 3. Devolvemos la respuesta de Python (debe incluir el 'output_key' para el polling)
+        // Python debería retornar 200/202.
+        return response()->json(
+            json_decode($response->getBody()->getContents()),
+            $response->getStatusCode()
+        );
+    } catch (RequestException $e) {
+        // Utilizamos la función de manejo de errores de Guzzle que ya tiene definida
+        return $this->handleGuzzleError($e);
     }
+}
 
     /**
      * PASO 4: Verificar el estado del trabajo en la API de Python.
